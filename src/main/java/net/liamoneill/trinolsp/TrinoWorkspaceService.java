@@ -9,7 +9,7 @@ import org.eclipse.lsp4j.services.WorkspaceService;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class TrinoWorkspaceServer implements WorkspaceService {
+public class TrinoWorkspaceService implements WorkspaceService {
 
     // TODO is overriding `symbol` necessary?
     @Override

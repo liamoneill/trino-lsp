@@ -1,34 +1,40 @@
 package net.liamoneill.trinolsp;
 
 import org.eclipse.lsp4j.*;
-import org.eclipse.lsp4j.services.*;
+import org.eclipse.lsp4j.services.LanguageClient;
+import org.eclipse.lsp4j.services.LanguageClientAware;
+import org.eclipse.lsp4j.services.LanguageServer;
+import org.eclipse.lsp4j.services.WorkspaceService;
 
 import java.util.concurrent.CompletableFuture;
 
 public class TrinoLanguageServer implements LanguageServer, LanguageClientAware {
-    private TextDocumentService textDocumentService;
-    private WorkspaceService workspaceService;
+
+    private final TrinoTextDocumentService textDocumentService;
+    private final TrinoWorkspaceService workspaceService;
+
+    private LanguageClient client;
 
     public TrinoLanguageServer() {
-        this.textDocumentService = new TrinoTextDocumentService();
-        this.workspaceService = new TrinoWorkspaceServer();
+        this.textDocumentService = new TrinoTextDocumentService(this);
+        this.workspaceService = new TrinoWorkspaceService();
     }
 
     @Override
     public CompletableFuture<InitializeResult> initialize(InitializeParams initializeParams) {
-        // Initialize the InitializeResult for this LS.
         InitializeResult initializeResult = new InitializeResult(new ServerCapabilities());
 
-        // Set the capabilities of the LS to inform the client.
-        initializeResult.getCapabilities().setTextDocumentSync(TextDocumentSyncKind.Full);
-        CompletionOptions completionOptions = new CompletionOptions();
-        initializeResult.getCapabilities().setCompletionProvider(completionOptions);
+        ServerCapabilities capabilities = initializeResult.getCapabilities();
+        capabilities.setTextDocumentSync(TextDocumentSyncKind.Full);
+        capabilities.setCompletionProvider(new CompletionOptions());
+        capabilities.setDocumentFormattingProvider(true);
 
         return CompletableFuture.supplyAsync(() -> initializeResult);
     }
 
     @Override
-    public void connect(LanguageClient languageClient) {
+    public void connect(LanguageClient client) {
+        this.client = client;
     }
 
     @Override
@@ -43,12 +49,16 @@ public class TrinoLanguageServer implements LanguageServer, LanguageClientAware 
     }
 
     @Override
-    public TextDocumentService getTextDocumentService() {
+    public TrinoTextDocumentService getTextDocumentService() {
         return textDocumentService;
     }
 
     @Override
     public WorkspaceService getWorkspaceService() {
         return workspaceService;
+    }
+
+    public LanguageClient getClient() {
+        return client;
     }
 }

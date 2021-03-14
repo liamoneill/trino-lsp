@@ -3,56 +3,161 @@ package net.liamoneill.trinolsp;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class TrinoTextDocumentService implements TextDocumentService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrinoTextDocumentService.class);
+
+    private final TrinoLanguageServer trinoLanguageServer;
+    private final Map<String, TextDocumentItem> openedDocuments = new HashMap<>();
+
+    public TrinoTextDocumentService(TrinoLanguageServer trinoLanguageServer) {
+        this.trinoLanguageServer = trinoLanguageServer;
+    }
+
     @Override
     public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(CompletionParams completionParams) {
-        // Provide completion item.
-        return CompletableFuture.supplyAsync(() -> {
-            List<CompletionItem> completionItems = new ArrayList<>();
-            try {
-                // Sample Completion item for sayHello
-                CompletionItem completionItem = new CompletionItem();
-                // Define the text to be inserted in to the file if the completion item is selected.
-                completionItem.setInsertText("sayHello() {\n    print(\"hello\")\n}");
-                // Set the label that shows when the completion drop down appears in the Editor.
-                completionItem.setLabel("sayHello()");
-                // Set the completion kind. This is a snippet.
-                // That means it replace character which trigger the completion and
-                // replace it with what defined in inserted text.
-                completionItem.setKind(CompletionItemKind.Snippet);
-                // This will set the details for the snippet code which will help user to
-                // understand what this completion item is.
-                completionItem.setDetail("sayHello()\n this will say hello to the people");
+        String uri = completionParams.getTextDocument().getUri();
+        LOGGER.info("completion: {}", uri);
 
-                // Add the sample completion item to the list.
-                completionItems.add(completionItem);
-            } catch (Exception e) {
-                //TODO: Handle the exception.
-            }
-
-            // Return the list of completion items.
-            return Either.forLeft(completionItems);
-        });
+        return new CompletionRunner(trinoLanguageServer).compute(completionParams);
     }
 
     @Override
-    public void didOpen(DidOpenTextDocumentParams didOpenTextDocumentParams) {
+    public CompletableFuture<CompletionItem> resolveCompletionItem(CompletionItem unresolved) {
+        LOGGER.info("resolveCompletionItem: {}", unresolved.getLabel());
+        return CompletableFuture.completedFuture(unresolved);
     }
 
     @Override
-    public void didChange(DidChangeTextDocumentParams didChangeTextDocumentParams) {
+    public CompletableFuture<Hover> hover(HoverParams params) {
+        LOGGER.info("hover: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public void didClose(DidCloseTextDocumentParams didCloseTextDocumentParams) {
+    public CompletableFuture<SignatureHelp> signatureHelp(SignatureHelpParams params) {
+        LOGGER.info("signatureHelp: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public void didSave(DidSaveTextDocumentParams didSaveTextDocumentParams) {
+    public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> definition(DefinitionParams params) {
+        TextDocumentIdentifier textDocument = params.getTextDocument();
+        LOGGER.info("definition: {}", textDocument);
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
+    public CompletableFuture<List<? extends Location>> references(ReferenceParams params) {
+        LOGGER.info("references: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(Collections.emptyList());
+    }
+
+    @Override
+    public CompletableFuture<List<? extends DocumentHighlight>> documentHighlight(DocumentHighlightParams params) {
+        LOGGER.info("documentHighlight: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(Collections.emptyList());
+    }
+
+    @Override
+    public CompletableFuture<List<Either<SymbolInformation, DocumentSymbol>>> documentSymbol(DocumentSymbolParams params) {
+        LOGGER.info("documentSymbol: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(Collections.emptyList());
+    }
+
+    @Override
+    public CompletableFuture<List<Either<Command, CodeAction>>> codeAction(CodeActionParams params) {
+        LOGGER.info("codeAction: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(Collections.emptyList());
+    }
+
+    @Override
+    public CompletableFuture<List<? extends CodeLens>> codeLens(CodeLensParams params) {
+        LOGGER.info("codeLens: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(Collections.emptyList());
+    }
+
+    @Override
+    public CompletableFuture<CodeLens> resolveCodeLens(CodeLens unresolved) {
+        LOGGER.info("resolveCodeLens: {}", unresolved.getCommand().getCommand());
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> formatting(DocumentFormattingParams params) {
+        LOGGER.info("formatting: {}", params.getTextDocument());
+
+
+        return new FormatterRunner(trinoLanguageServer).compute(params);
+    }
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> rangeFormatting(DocumentRangeFormattingParams params) {
+        LOGGER.info("rangeFormatting: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(Collections.emptyList());
+    }
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> onTypeFormatting(DocumentOnTypeFormattingParams params) {
+        LOGGER.info("onTypeFormatting: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(Collections.emptyList());
+    }
+
+    @Override
+    public CompletableFuture<WorkspaceEdit> rename(RenameParams params) {
+        LOGGER.info("rename: {}", params.getTextDocument());
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
+    public void didOpen(DidOpenTextDocumentParams params) {
+        TextDocumentItem textDocument = params.getTextDocument();
+        LOGGER.info("didOpen: {}", textDocument);
+        openedDocuments.put(textDocument.getUri(), textDocument);
+
+        new DiagnosticRunner(trinoLanguageServer).compute(params);
+    }
+
+    @Override
+    public void didChange(DidChangeTextDocumentParams params) {
+        LOGGER.info("didChange: {}", params.getTextDocument());
+        List<TextDocumentContentChangeEvent> contentChanges = params.getContentChanges();
+        TextDocumentItem textDocumentItem = openedDocuments.get(params.getTextDocument().getUri());
+        if (!contentChanges.isEmpty()) {
+            textDocumentItem.setText(contentChanges.get(0).getText());
+            new DiagnosticRunner(trinoLanguageServer).compute(params);
+        }
+    }
+
+    @Override
+    public void didClose(DidCloseTextDocumentParams params) {
+        LOGGER.info("didClose: {}", params.getTextDocument());
+        String uri = params.getTextDocument().getUri();
+        openedDocuments.remove(uri);
+
+        /* The rule observed by VS Code servers as explained in LSP specification is to clear the Diagnostic when it is related to a single file.
+         * https://microsoft.github.io/language-server-protocol/specification#textDocument_publishDiagnostics
+         * */
+        new DiagnosticRunner(trinoLanguageServer).clear(uri);
+    }
+
+    @Override
+    public void didSave(DidSaveTextDocumentParams params) {
+        LOGGER.info("didSave: {}", params.getTextDocument());
+        new DiagnosticRunner(trinoLanguageServer).compute(params);
+    }
+
+    public TextDocumentItem getOpenedDocument(String uri) {
+        return openedDocuments.get(uri);
+    }
+
+    public Collection<TextDocumentItem> getAllOpenedDocuments() {
+        return openedDocuments.values();
     }
 }

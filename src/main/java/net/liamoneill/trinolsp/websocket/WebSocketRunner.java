@@ -19,16 +19,16 @@ public class WebSocketRunner {
         port = port != -1 ? port : DEFAULT_PORT;
         contextPath = contextPath != null ? contextPath : DEFAULT_CONTEXT_PATH;
         Server server = new Server(hostname, port, contextPath, null, MyLSPWebSocketServerConfigProvider.class);
-        Runtime.getRuntime().addShutdownHook(new Thread(server::stop, "camel-lsp-websocket-server-shutdown-hook"));
+        Runtime.getRuntime().addShutdownHook(new Thread(server::stop, "trino-lsp-websocket-server-shutdown-hook"));
 
         try {
             server.start();
             Thread.currentThread().join();
         } catch (InterruptedException e) {
-            LOGGER.error("Camel LSP Websocket server has been interrupted.", e);
+            LOGGER.error("Trino LSP Websocket server has been interrupted.", e);
             Thread.currentThread().interrupt();
         } catch (DeploymentException e) {
-            LOGGER.error("Cannot start Camel LSP Websocket server.", e);
+            LOGGER.error("Cannot start Trino LSP Websocket server.", e);
         } finally {
             server.stop();
         }
