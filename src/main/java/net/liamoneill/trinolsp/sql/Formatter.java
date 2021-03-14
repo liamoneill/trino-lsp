@@ -1,7 +1,6 @@
 package net.liamoneill.trinolsp.sql;
 
 import com.google.common.base.CharMatcher;
-import io.trino.sql.SqlFormatter;
 import io.trino.sql.parser.ParsingException;
 import io.trino.sql.tree.Statement;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;

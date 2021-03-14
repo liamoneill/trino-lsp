@@ -74,7 +74,8 @@ public class TrinoTextDocumentService implements TextDocumentService {
     @Override
     public CompletableFuture<List<Either<Command, CodeAction>>> codeAction(CodeActionParams params) {
         LOGGER.info("codeAction: {}", params.getTextDocument());
-        return CompletableFuture.completedFuture(Collections.emptyList());
+
+        return new CodeActionsRunner(trinoLanguageServer).compute(params);
     }
 
     @Override

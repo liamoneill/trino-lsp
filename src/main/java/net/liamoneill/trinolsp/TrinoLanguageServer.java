@@ -6,6 +6,8 @@ import org.eclipse.lsp4j.services.LanguageClientAware;
 import org.eclipse.lsp4j.services.LanguageServer;
 import org.eclipse.lsp4j.services.WorkspaceService;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 public class TrinoLanguageServer implements LanguageServer, LanguageClientAware {
@@ -27,7 +29,9 @@ public class TrinoLanguageServer implements LanguageServer, LanguageClientAware 
         ServerCapabilities capabilities = initializeResult.getCapabilities();
         capabilities.setTextDocumentSync(TextDocumentSyncKind.Full);
         capabilities.setCompletionProvider(new CompletionOptions());
-        capabilities.setDocumentFormattingProvider(true);
+        capabilities.setCodeLensProvider(new CodeLensOptions());
+        capabilities.setDocumentFormattingProvider(new DocumentFormattingOptions());
+        capabilities.setCodeActionProvider(new CodeActionOptions(Collections.singletonList(CodeActionKind.QuickFix)));
 
         return CompletableFuture.supplyAsync(() -> initializeResult);
     }
