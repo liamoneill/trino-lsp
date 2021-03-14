@@ -8,7 +8,7 @@ import org.eclipse.lsp4j.services.LanguageClient;
 import java.util.Arrays;
 import java.util.List;
 
-public class Runner {
+public class Main {
     private static final String WEBSOCKET_PARAMETER = "--websocket";
     private static final String PORT_PARAMETER = "--port=";
     private static final String HOSTNAME_PARAMETER = "--hostname=";
