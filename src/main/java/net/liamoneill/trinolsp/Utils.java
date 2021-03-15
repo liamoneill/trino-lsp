@@ -63,4 +63,12 @@ public class Utils {
 
         return edits;
     }
+
+    public static boolean inRange(Position position, Range range) {
+        return !(position.getLine() >= range.getStart().getLine() ||
+                position.getCharacter() < range.getStart().getCharacter() ||
+                position.getLine() > range.getEnd().getLine() ||
+                position.getCharacter() > range.getEnd().getCharacter());
+
+    }
 }

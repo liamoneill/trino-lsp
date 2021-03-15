@@ -37,7 +37,8 @@ public class TrinoTextDocumentService implements TextDocumentService {
     @Override
     public CompletableFuture<Hover> hover(HoverParams params) {
         LOGGER.info("hover: {}", params.getTextDocument());
-        return CompletableFuture.completedFuture(null);
+
+        return new HoverRunner(trinoLanguageServer).compute(params);
     }
 
     @Override

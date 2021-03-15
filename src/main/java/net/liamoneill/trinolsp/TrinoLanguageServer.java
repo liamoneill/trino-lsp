@@ -32,6 +32,7 @@ public class TrinoLanguageServer implements LanguageServer, LanguageClientAware 
         capabilities.setCodeLensProvider(new CodeLensOptions());
         capabilities.setDocumentFormattingProvider(new DocumentFormattingOptions());
         capabilities.setCodeActionProvider(new CodeActionOptions(Collections.singletonList(CodeActionKind.QuickFix)));
+        capabilities.setHoverProvider(new HoverOptions());
 
         return CompletableFuture.supplyAsync(() -> initializeResult);
     }
