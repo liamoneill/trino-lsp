@@ -4,10 +4,9 @@ import io.trino.sql.parser.ParsingOptions;
 import io.trino.sql.parser.SqlParser;
 import io.trino.sql.tree.Node;
 import io.trino.sql.tree.Statement;
-import org.junit.jupiter.api.TestInstance;
+import net.liamoneill.trinolsp.sql.EventViewRewriter;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 

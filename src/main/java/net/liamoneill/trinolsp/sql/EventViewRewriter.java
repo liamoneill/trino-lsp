@@ -1,7 +1,8 @@
-package net.liamoneill.trinolsp;
+package net.liamoneill.trinolsp.sql;
 
 import com.google.common.collect.Iterables;
 import io.trino.sql.tree.*;
+import net.liamoneill.trinolsp.TreeRewriter;
 
 import java.util.*;
 import java.util.stream.Collectors;

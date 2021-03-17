@@ -3,7 +3,7 @@ package net.liamoneill.trinolsp.http;
 import io.trino.sql.parser.ParsingException;
 import io.trino.sql.tree.Node;
 import io.trino.sql.tree.Statement;
-import net.liamoneill.trinolsp.EventViewRewriter;
+import net.liamoneill.trinolsp.sql.EventViewRewriter;
 import net.liamoneill.trinolsp.sql.Formatter;
 import net.liamoneill.trinolsp.sql.Parser;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
