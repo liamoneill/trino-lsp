@@ -8,7 +8,7 @@ import org.eclipse.lsp4j.services.LanguageClient;
 import org.eclipse.lsp4j.services.LanguageClientAware;
 import org.eclipse.lsp4j.websocket.WebSocketEndpoint;
 
-public class MyLSPWebSocketEndpoint extends WebSocketEndpoint<LanguageClient> {
+public class TrinoLspWebSocketEndpoint extends WebSocketEndpoint<LanguageClient> {
 
     @Override
     protected void configure(Builder<LanguageClient> builder) {

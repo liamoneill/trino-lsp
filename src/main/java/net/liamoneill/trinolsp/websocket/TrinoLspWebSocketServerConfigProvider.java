@@ -6,13 +6,13 @@ import javax.websocket.server.ServerEndpointConfig;
 import java.util.Collections;
 import java.util.Set;
 
-public class MyLSPWebSocketServerConfigProvider implements ServerApplicationConfig {
+public class TrinoLspWebSocketServerConfigProvider implements ServerApplicationConfig {
 
     public static final String WEBSOCKET_SERVER_PATH = "/my-language-server";
 
     @Override
     public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> endpointClasses) {
-        ServerEndpointConfig conf = ServerEndpointConfig.Builder.create(MyLSPWebSocketEndpoint.class, WEBSOCKET_SERVER_PATH).build();
+        ServerEndpointConfig conf = ServerEndpointConfig.Builder.create(TrinoLspWebSocketEndpoint.class, WEBSOCKET_SERVER_PATH).build();
         return Collections.singleton(conf);
     }
 

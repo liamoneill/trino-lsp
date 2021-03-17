@@ -2,6 +2,7 @@ package net.liamoneill.trinolsp.sql;
 
 import com.google.common.base.CharMatcher;
 import io.trino.sql.parser.ParsingException;
+import io.trino.sql.tree.Node;
 import io.trino.sql.tree.Statement;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 
@@ -13,7 +14,7 @@ public class Formatter {
     {
     }
 
-    public static String format(Statement sql)
+    public static String format(Node sql)
     {
         String formattedSql = SqlFormatter.formatSql(sql);
 

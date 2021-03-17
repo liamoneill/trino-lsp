@@ -10,15 +10,15 @@ public class WebSocketRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketRunner.class);
 
-    private static final String DEFAULT_HOSTNAME = "localhost";
-    private static final int DEFAULT_PORT = 8025;
+    private static final String DEFAULT_HOSTNAME = "127.0.0.1";
+    private static final int DEFAULT_PORT = 5000;
     private static final String DEFAULT_CONTEXT_PATH = "/";
 
-    public void runWebSocketServer(String hostname, int port, String contextPath) {
+    public void runWebSocketServer(String hostname, Integer port, String contextPath) {
         hostname = hostname != null ? hostname : DEFAULT_HOSTNAME;
-        port = port != -1 ? port : DEFAULT_PORT;
+        port = port != null ? port : DEFAULT_PORT;
         contextPath = contextPath != null ? contextPath : DEFAULT_CONTEXT_PATH;
-        Server server = new Server(hostname, port, contextPath, null, MyLSPWebSocketServerConfigProvider.class);
+        Server server = new Server(hostname, port, contextPath, null, TrinoLspWebSocketServerConfigProvider.class);
         Runtime.getRuntime().addShutdownHook(new Thread(server::stop, "trino-lsp-websocket-server-shutdown-hook"));
 
         try {
