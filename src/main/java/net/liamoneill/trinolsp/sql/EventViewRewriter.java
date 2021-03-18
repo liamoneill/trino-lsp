@@ -120,7 +120,7 @@ public class EventViewRewriter extends TreeRewriter<Void> {
         Set<String> columns = columnConstraints.stream()
                 .filter(columnConstraint ->
                         columnConstraint.constraintType == Context.ColumnConstraintType.EQUAL ||
-                                columnConstraint.constraintType ==  Context.ColumnConstraintType.IN)
+                                columnConstraint.constraintType == Context.ColumnConstraintType.IN)
                 .map(c -> c.column)
                 .collect(Collectors.toSet());
 

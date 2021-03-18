@@ -29,8 +29,20 @@ public class EventViewRewriterTest {
     private static Stream<Arguments> testCorrectlyRewritesArguments() {
         return Stream.of(
                 Arguments.of(
+                        "select * from events as e where e.id = 'c8b7acbc-2ba8-457e-a3bc-8b904893cc6d'",
+                        "select * from events_by_id as e where e.id = 'c8b7acbc-2ba8-457e-a3bc-8b904893cc6d'"
+                ),
+                Arguments.of(
                         "select * from events as e where e.type = 'pageview'",
                         "select * from events_by_type as e where e.type = 'pageview'"
+                ),
+                Arguments.of(
+                        "select * from events as e where e.session_id = 'c8b7acbc-2ba8-457e-a3bc-8b904893cc6d'",
+                        "select * from events_by_session_id as e where e.session_id = 'c8b7acbc-2ba8-457e-a3bc-8b904893cc6d'"
+                ),
+                Arguments.of(
+                        "select * from events as e where e.session_id = 'c8b7acbc-2ba8-457e-a3bc-8b904893cc6d' and e.type = 'pageview'",
+                        "select * from events_by_session_id as e where e.session_id = 'c8b7acbc-2ba8-457e-a3bc-8b904893cc6d' and e.type = 'pageview'"
                 ),
                 Arguments.of(
                         "select * from events as e where 'pageview' = e.type",

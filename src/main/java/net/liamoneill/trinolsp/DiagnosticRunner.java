@@ -6,7 +6,6 @@ import net.liamoneill.trinolsp.sql.Parser;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 
-import javax.swing.plaf.nimbus.State;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -20,19 +19,18 @@ public class DiagnosticRunner {
     }
 
     public void compute(DidSaveTextDocumentParams params) {
-        String camelText = retrieveFullText(params);
-        computeDiagnostics(camelText, trinoLanguageServer.getTextDocumentService().getOpenedDocument(params.getTextDocument().getUri()));
+        String text = retrieveFullText(params);
+        computeDiagnostics(text, trinoLanguageServer.getTextDocumentService().getOpenedDocument(params.getTextDocument().getUri()));
     }
 
     public void compute(DidChangeTextDocumentParams params) {
-        String camelText = params.getContentChanges().get(0).getText();
-
-        computeDiagnostics(camelText, trinoLanguageServer.getTextDocumentService().getOpenedDocument(params.getTextDocument().getUri()));
+        String text = params.getContentChanges().get(0).getText();
+        computeDiagnostics(text, trinoLanguageServer.getTextDocumentService().getOpenedDocument(params.getTextDocument().getUri()));
     }
 
     public void compute(DidOpenTextDocumentParams params) {
-        String camelText = params.getTextDocument().getText();
-        computeDiagnostics(camelText, params.getTextDocument());
+        String text = params.getTextDocument().getText();
+        computeDiagnostics(text, params.getTextDocument());
     }
 
     public void computeDiagnostics(String sql, TextDocumentItem documentItem) {
